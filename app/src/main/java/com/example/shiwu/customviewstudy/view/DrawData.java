@@ -1,4 +1,4 @@
-package com.example.shiwu.customviewstudy.prectise;
+package com.example.shiwu.customviewstudy.view;
 
 /**
  * Created by shiwu on 2017/8/19.

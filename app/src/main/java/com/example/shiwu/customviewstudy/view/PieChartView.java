@@ -1,4 +1,4 @@
-package com.example.shiwu.customviewstudy.prectise;
+package com.example.shiwu.customviewstudy.view;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -14,7 +14,6 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Xfermode;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 
 import com.example.shiwu.customviewstudy.R;
@@ -31,13 +30,13 @@ public class PieChartView extends View {
     private Paint mPaint;
     private Resources resources;
 
-    private float totalNum;
+    private float totalNum;//总数量
 
-    private float currentAngle;
+    private float currentAngle;//当前画到的角度
 
-    private int circleRadius = 250;
-    private int ringWidth = 100;
-    private int textSize;
+    private int circleRadius;//大圆半径
+    private int ringWidth;//圆环宽度
+    private int textSize;//描述文字字体大小
 
     private RectF circleRect;
 
@@ -71,7 +70,6 @@ public class PieChartView extends View {
         if (datas == null) {
             return;
         }
-        Log.e("CircleView", "onDraw");
         centerX = getWidth() / 2;
         centerY = getHeight() / 2;
         currentAngle = -90.0f;
@@ -84,7 +82,7 @@ public class PieChartView extends View {
         Bitmap source = Bitmap.createBitmap(getWidth(), getHeight(), Bitmap.Config.ARGB_8888);
         Canvas sourceCanvas = new Canvas(source);
 
-        circleRect = new RectF(getWidth() / 2 - circleRadius, getHeight() / 2 - circleRadius, getWidth() / 2 + circleRadius, getHeight() / 2 + circleRadius);
+        circleRect = new RectF(centerX - circleRadius,centerY - circleRadius, centerX + circleRadius, centerY+ circleRadius);
 
         for (DrawData data : datas) {
             drawItem(sourceCanvas, data);
@@ -92,7 +90,7 @@ public class PieChartView extends View {
 
         Xfermode xfermode = new PorterDuffXfermode(PorterDuff.Mode.DST_OUT);
         mPaint.setXfermode(xfermode);
-        sourceCanvas.drawCircle(getWidth() / 2, getHeight() / 2, circleRadius - ringWidth, mPaint);
+        sourceCanvas.drawCircle(centerX, centerY, circleRadius - ringWidth, mPaint);
         mPaint.setXfermode(null);
         canvas.drawBitmap(source, 0, 0, mPaint);
     }
@@ -100,28 +98,30 @@ public class PieChartView extends View {
     private void drawItem(Canvas canvas, DrawData data) {
         mPaint.setColor(resources.getColor(data.getColor()));
         float sweepAngle = data.getRate() / totalNum * 360;
-        String drawName = data.getName() + (new BigDecimal(data.getRate()).divide(new BigDecimal(totalNum / 100), 2, BigDecimal.ROUND_HALF_UP) + "%");
-        if (datas.indexOf(data) == datas.size() - 1)
+        if (datas.indexOf(data) == datas.size() - 1)//最后一项直接画满剩余角度
             sweepAngle = 270 - currentAngle;
         canvas.drawArc(circleRect, currentAngle, sweepAngle, true, mPaint);
 
         Point middlePoint = getPoint(currentAngle, sweepAngle, false);
         Point turnPoint = getPoint(currentAngle, sweepAngle, true);
 
-        Path path = new Path();
-
+        //折线起点的点
         canvas.drawCircle(middlePoint.x, middlePoint.y, 5, mPaint);
+
+        //折线path
+        Path path = new Path();
         path.moveTo(middlePoint.x, middlePoint.y);
         path.lineTo(turnPoint.x, turnPoint.y);
 
+        //获取文字的长度
         Rect rect = new Rect();
         mPaint.setTextSize(textSize);
+        String drawName = data.getName() + (new BigDecimal(data.getRate()).divide(new BigDecimal(totalNum / 100), 2, BigDecimal.ROUND_HALF_UP) + "%");
         mPaint.getTextBounds(drawName, 0, drawName.length(), rect);
 
         int nameLength = rect.width();
         RectF textFect = new RectF();
         int quadrant = getQuadrant(middlePoint);
-        Log.e("drawItem", "---quadrant = " + quadrant);
         switch (quadrant) {
             case 1:
                 path.rLineTo(nameLength, 0);
@@ -148,6 +148,7 @@ public class PieChartView extends View {
         currentAngle += sweepAngle;
     }
 
+    //获取折线起点或者转折点
     private Point getPoint(float currentAngle, float sweepAngle, boolean isTurningPoint) {
         float circleX = getWidth() / 2;
         float circleY = getHeight() / 2;
@@ -155,8 +156,6 @@ public class PieChartView extends View {
         float middleAngle = currentAngle + sweepAngle / 2;
         int middleX;
         int middleY;
-        Log.e("getPoint", "----middleAngle = " + middleAngle);
-        Log.e("getPoint", "----sin = " + Math.sin(middleAngle) + "---cos = " + Math.cos(middleAngle));
         double radian = middleAngle * 2 * Math.PI / 360;
         if (!isTurningPoint) {
             middleX = (int) (circleX + Math.cos(radian) * (circleRadius + 10));
@@ -166,10 +165,10 @@ public class PieChartView extends View {
             middleY = (int) (circleY + Math.sin(radian) * (circleRadius + 40));
         }
 
-
         return new Point(middleX, middleY);
     }
 
+    //判断圆弧中点属于第几象限，确定折线的方向以及文字的位置
     private int getQuadrant(Point point) {
         int x = point.x;
         int y = point.y;
@@ -182,8 +181,6 @@ public class PieChartView extends View {
             return 3;
         else
             return 4;
-
-
     }
 
 
