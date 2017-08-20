@@ -1,1 +1,3 @@
 # PieChartView
+
+![avatar](/example.jpg)
