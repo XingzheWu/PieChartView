@@ -20,9 +20,8 @@
     <com.example.shiwu.customviewstudy.view.PieChartView
         android:id="@+id/circle_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:describeTextSize="12sp"
-        app:pieRadius="70dp"
-        app:ringWidth="40dp"/>
+        android:layout_height="200dp"
+        android:paddingTop="20dp"
+        android:paddingBottom="20dp"/>
 
 </LinearLayout>

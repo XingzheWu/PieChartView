@@ -4,9 +4,11 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
 
-    <color name="C1">#8888FF</color>
-    <color name="C2">#88FF88</color>
-    <color name="C3">#FF8888</color>
-    <color name="C4">#888888</color>
-    <color name="C5">#888800</color>
+    <color name="C1">#3c3c8e</color>
+    <color name="C2">#ca6736</color>
+    <color name="C3">#660707</color>
+    <color name="C4">#383030</color>
+    <color name="C5">#51510c</color>
+    <color name="C6">#075613</color>
+    <color name="black">#000000</color>
 </resources>
