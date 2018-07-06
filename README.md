@@ -1,5 +1,5 @@
 # PieChartView
 
-![avatar](/example1.jpg)
-![avatar](/example2.jpg)
-![avatar](/example3.jpg)
+![avatar](/example1.png)
+![avatar](/example2.png)
+![avatar](/example3.png)
